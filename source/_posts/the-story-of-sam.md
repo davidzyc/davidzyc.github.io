@@ -14,6 +14,8 @@ tags:
 Every line of code is a breakthrough of myself.
 {% endblockquote %}
 
+{% asset_img three-sam.png Three SAM %}
+
 SAM, originally launched in 2014, was a campus homework platform built for students and teachers. From the time (Sept. 2016) I joined the Computerization, I have been working on its updates, bringing new functions to it. Last Semester, I worked with Jedi and used the whole semester on the new User Interface of old SAM. Eventually, we finished the project in June, just before the end of the semester. Although SAM looked very different from previous one, still few students and teachers used it. A collaboration system with a so small scope seems no longer in demand. 
 
 #### Reconstruct, Restart, Revive
@@ -22,6 +24,8 @@ In June 2017, I took over the Computerization. At that time, the homework functi
 What function to work on becomes the problem I’m unable to answer, since I don’t know students and teachers’ demand. I tried hard to find a companion for our Computerization by collaborating with them and providing them powerful online features as well as solutions they want. The student union of WFLA becomes our first partner. In June 2017, it’s close to the end of the semester. It was also the time for annual student organization assessment. The assessment process requires participants of that organization to perform a presentation, and the teachers and students off the stage will assess their performance. How to effectively collect answer from these audience becomes a problem for student unions. Payton Guo, the minister of student organization department, discussed with me about the feasibility to build a data collection application for the assessment. She provided the detailed list of function needed, and it was already June 20, less than 10 days before the assessment activity.
 
 Before the task, I have previously no experience on building such a large application. What’s more, I have never handle such an urgent task within 10 days. I start the project with anxiety and concerns. I spent two days reading documents of related development tools and skills, familiar with website coding techniques, and try to built sample units to examine the skills I learned. Then, June 23, 2017, marked the formal start of new SAM project, with its first function of data collecting, similar to voting. In June 24, 2017, after a whole day’s exploration in programming, I posted the first part of code of new SAM on github. It only contains one basic module, which is user login and register. For me, it is a breakthrough, because it is the first time when I have the ability to write HTML, which is user interface; PHP, which is background data processing logic; MySQL, which is database operation all three at a time. These are basic skills in website development, but it helped me later to build more powerful and amazing features. At the end, I spent two days to build the new SAM with voting function, another day to fix bug and to meet the requirements of Student Union. In June 26, 2017, I posted the last update and bug fix of the new SAM. Shortly after, all its code is deployed to a server and ready for use.
+
+{% asset_img sam-vote.png SAM Vote %}
 
 The challenge comes on the last day of the semester. For the whole afternoon, the students and teachers are using the platform for presentation rating. They send totally near one thousand scores to the platform in 3 hours. The platform is reliable during the whole process and receives positive feedback. SAM, Computerization and I are trusted by the student union from then on.
 
@@ -32,9 +36,13 @@ On August 12, 2017, the last day in my college trip, I received a message from m
 
 All details about the reservation function was clear. Because the module wasn’t complex, I finished the whole function in 12 hours – Yes, I’m working on it on my flight back. I deployed this function to server in August 14. This holds the fastest record for me to finish a project – within 4 days from receiving demand to giving out full application. The function was opened to all student organizations several days later. And it was proven to be reliable again.
 
+{% asset_img sam-reserve.png SAM Reserve %}
+
 On the beginning of this semester, a great opportunity of new SAM came with the annual organization recruiting season. The idea came that our Computerization needed a way other than We-chat public channel to publicize ourselves. Then I realized that I can help other organizations publicize with my effort. Therefore, I decided to create a new function called student organization. It consists of an organization home page and a recruiting page for every organization registered on our SAM platform. This function was mainly done on the first week of this semester, two weeks before the recruiting week.
 
 Tons of new features are added to this update of SAM. Image uploading, Online Text Editing, Search Function, Portal Page…. In one side, I used up all my techniques in programming to build this update, and learned many skills on website programming. On the other side, SAM were becoming more and more powerful. It was no longer a collection of tiny functions, but rather a comprehensive student platform.
+
+{% asset_img sam-org.png SAM Organization %}
 
 At the beginning of this semester, there were only one recruiting page on the platform – ourselves, Computerization. Luckily, the student union discovered this project and publicized it to all student organizations. On September 12, 2017, one week before recruiting days, over 50 student organizations uploaded their profile to our platform. SAM obtained tens of thousands of visits and thousands of visitors during the whole recruiting season. 
 
@@ -48,6 +56,8 @@ In order to meet such requirements, I learned to write website in an unfamiliar 
 After resolving all technical issues, I began discussing with student union about the user interface (UI). If SAM was a product, their role was similar to product managers, and I was similar to (actually was) programmers. Their demand on UI was always changing. To satisfy these changings, I modified code back and forth. The UI was increasingly elegant and fascinating.
 
 The most challenge part in the development of auction system came on the day of Charity and Auction. On 3pm, December 23, 2017, 4 hours before the auction event, a serious problem was discovered in website, which causes every Apple computers and phones unable to refresh the price in auction. I was no longer able search for solutions on Internet because of its urgency. I rewrote part of program in two hours’ time, replaced every possible line of code which causes the fault, and went through necessary uploading and testing in another one hour.
+
+{% asset_img 2017-why-charity-auction.jpg 2017 WHY Charity Auction %}
 
 The Why Charity 2017 started on time at 6 pm, December 23, 2017. I sat backstage and oversaw the status of server where SAM was hosted. Internet Traffic and server load burst out when one hundred people were visiting our website at the same time. Luckily, the server didn’t go down at last and the auction process was smooth going.
 
