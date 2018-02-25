@@ -1,7 +1,6 @@
 ---
 title: The Story of SAM
 date: 2017-12-24 14:51:55
-banner: /the-story-of-sam/sam-story-thumbnail.png
 categories:
 - Story
 tags:
