@@ -12,11 +12,11 @@ tags:
 Every line of code is a breakthrough of myself.
 {% endblockquote %}
 
-{% asset_img three-sam.png Three SAM %}
-
 SAM, originally launched in 2014, was a campus homework platform built for students and teachers. From the time (Sept. 2016) I joined the Computerization, I have been working on its updates, bringing new functions to it. Last Semester, I worked with Jedi and used the whole semester on the new User Interface of old SAM. Eventually, we finished the project in June, just before the end of the semester. Although SAM looked very different from previous one, still few students and teachers used it. A collaboration system with a so small scope seems no longer in demand. 
 
 <!-- more -->
+
+{% asset_img three-sam.png Three SAM %}
 
 #### Reconstruct, Restart, Revive
 In June 2017, I took over the Computerization. At that time, the homework function was almost replaced by We-chat groups within the campus, and the program and code of SAM become more and more complex and hard to maintain. Therefore, I decided to re-construct the SAM platform on both function and technical hierarchy.
