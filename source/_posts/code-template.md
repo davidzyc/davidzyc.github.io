@@ -9,6 +9,10 @@ tags:
 - Programming
 ---
 
+Hello World!
+
+<!-- more -->
+
 # 数据结构（data structure）
 
 ## 线段树

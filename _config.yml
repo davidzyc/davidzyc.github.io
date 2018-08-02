@@ -7,7 +7,7 @@ title: Yuchen Zhong
 subtitle: \@davidzyc
 description:
 author: Yuchen Zhong
-language: en
+language: zh-Hans
 timezone: Asia/Shanghai
 
 # URL
@@ -72,7 +72,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: icarus
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
