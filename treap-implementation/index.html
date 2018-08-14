@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="OI,Programming," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="作为平衡BST里最简单的版本，Treap光是模板的难度就已经超过了提高+，达到了 省选 （luogu上的紫色标签）。但是NOIP去年还真的考了一题！因此有必要认真的学习一下。（这也是大学CS数据结构课的标配，早晚要学，不如现在学掉）。     本蒟蒻敲这个模板花了一个小时，调bug又花了半个小时。感谢lyd的算法竞赛进阶指南，他的代码是我唯一看得懂的一个treap版本。网上那些用指针实现的，阅读并">
+<meta name="keywords" content="OI,Programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Treap实现和易错点总结">
+<meta property="og:url" content="http://yoursite.com/treap-implementation/index.html">
+<meta property="og:site_name" content="Yuchen Zhong">
+<meta property="og:description" content="作为平衡BST里最简单的版本，Treap光是模板的难度就已经超过了提高+，达到了 省选 （luogu上的紫色标签）。但是NOIP去年还真的考了一题！因此有必要认真的学习一下。（这也是大学CS数据结构课的标配，早晚要学，不如现在学掉）。     本蒟蒻敲这个模板花了一个小时，调bug又花了半个小时。感谢lyd的算法竞赛进阶指南，他的代码是我唯一看得懂的一个treap版本。网上那些用指针实现的，阅读并">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/treap-implementation/treap_ac.png">
+<meta property="og:updated_time" content="2018-08-14T15:21:15.076Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Treap实现和易错点总结">
+<meta name="twitter:description" content="作为平衡BST里最简单的版本，Treap光是模板的难度就已经超过了提高+，达到了 省选 （luogu上的紫色标签）。但是NOIP去年还真的考了一题！因此有必要认真的学习一下。（这也是大学CS数据结构课的标配，早晚要学，不如现在学掉）。     本蒟蒻敲这个模板花了一个小时，调bug又花了半个小时。感谢lyd的算法竞赛进阶指南，他的代码是我唯一看得懂的一个treap版本。网上那些用指针实现的，阅读并">
+<meta name="twitter:image" content="http://yoursite.com/treap-implementation/treap_ac.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/treap-implementation/"/>
+
+
+
+
+
+  <title>Treap实现和易错点总结 | Yuchen Zhong</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yuchen Zhong</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">\@davidzyc</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/treap-implementation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yuchen Zhong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuchen Zhong">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Treap实现和易错点总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T16:26:19+00:00">
+                2018-03-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OI/" itemprop="url" rel="index">
+                    <span itemprop="name">OI</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作为平衡BST里最简单的版本，Treap光是模板的难度就已经超过了提高+，达到了 <strong>省选</strong> （luogu上的紫色标签）。但是NOIP去年还真的考了一题！因此有必要认真的学习一下。（这也是大学CS数据结构课的标配，早晚要学，不如现在学掉）。    </p>
+<p>本蒟蒻敲这个模板花了一个小时，调bug又花了半个小时。感谢lyd的算法竞赛进阶指南，他的代码是我唯一看得懂的一个treap版本。网上那些用指针实现的，阅读并不容易而且溢出调试麻烦….   </p>
+<p>原理不说了，出门右拐百度百科。<a href="https://baike.baidu.com/item/Treap/4321536" target="_blank" rel="noopener">https://baike.baidu.com/item/Treap/4321536</a>   </p>
+<p>这里只列举一下写treap时易错的点。并且根据我的洛谷WA记录，treap一错那多半是大量RE， <strong>很容易爆零</strong> ，所以下面的坑一定要避而远之哦！   </p>
+<h1 id="Treap易错点"><a href="#Treap易错点" class="headerlink" title="Treap易错点"></a>Treap易错点</h1><ol>
+<li>初始化时添加最小点和最大点，他们之间的关系容易写错。</li>
+<li>插入操作时最后需要维护当前节点的附加信息，如子树个数等，容易遗忘。</li>
+<li>root节点在初始化时需要额外手动指定，容易遗漏。</li>
+<li>函数名如new、insert、update等注意不要踩C++编译器关键字。</li>
+<li>查前驱后继时，找到并更新答案（左走到底和右走到底）应应时刻判断当前节点p为空的情况：进入while之前设置if判断是否存在左/右节点以便进入while；在while中判断tn[p].l/r是否存在，而不是判断p是否存在。后者会造成越界访问不存在的虚拟节点0，造成答案错误。</li>
+<li>任何对treap的修改（插入、修改、删除、旋转）都要执行update命令，并且注意update顺序：先update儿子节点，再update当前节点。</li>
+<li>对treap的修改、递归执行时，定义函数时把当前节点的传参设为引用。否则会导致更新失败。</li>
+<li>删除操作时判断左旋还是右旋，左旋条件为右子树为空，或者左子节点treap key堆键值比右子节点大。两条件顺序不可颠倒，关系为或。 <strong>并且不要写成判断左子树是否存在，那是错的，会导致虚拟节点旋转上树进而造成树的断裂。</strong> </li>
+<li>按排名查找值和按值查找排名时，注意treap初始化时无穷大和无穷小节点的影响。为去除这两个节点的影响，输入排名时应+1，按值找到排名时应-1.</li>
+</ol>
+<p>以下给出一份AC代码，对应   </p>
+<p>luogu上的treap模板题<br><a href="https://www.luogu.org/problemnew/show/P3369" target="_blank" rel="noopener">https://www.luogu.org/problemnew/show/P3369</a></p>
+<p>bzoj上的模板题<br><a href="http://www.lydsy.com/JudgeOnline/problem.php?id=3224" target="_blank" rel="noopener">http://www.lydsy.com/JudgeOnline/problem.php?id=3224</a></p>
+<p>请展开阅读   </p>
+<a id="more"></a>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> RNDS = <span class="number">8247252</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> RNDM = <span class="number">2394522123</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXN = <span class="number">1e5</span>+<span class="number">7</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x7fffffff</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> treap_root;</span><br><span class="line"><span class="keyword">int</span> tncnt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">treap_node</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> key, val;</span><br><span class="line">  <span class="keyword">int</span> l, r;</span><br><span class="line">  <span class="keyword">int</span> size, cnt;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">treap_node tn[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">new_node</span><span class="params">(<span class="keyword">int</span> val)</span></span>&#123;</span><br><span class="line">  ++tncnt;</span><br><span class="line">  tn[tncnt].val = val;</span><br><span class="line">  tn[tncnt].key = rand() % RNDM;</span><br><span class="line">  tn[tncnt].size = tn[tncnt].cnt = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> tncnt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;</span><br><span class="line">  tn[p].size = tn[tn[p].l].size + tn[tn[p].r].size + tn[p].cnt;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">  new_node(-INF);</span><br><span class="line">  new_node(INF);</span><br><span class="line">  tn[<span class="number">1</span>].r = <span class="number">2</span>;</span><br><span class="line">  treap_root = <span class="number">1</span>;</span><br><span class="line">  update(treap_root);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_val_by_rank</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> trank)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(p == <span class="number">0</span>) <span class="keyword">return</span> INF;</span><br><span class="line">  <span class="keyword">if</span>(trank &lt;= tn[tn[p].l].size)&#123;</span><br><span class="line">    <span class="keyword">return</span> get_val_by_rank(tn[p].l, trank);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(trank &gt; tn[tn[p].l].size &amp;&amp; trank &lt;= tn[tn[p].l].size + tn[p].cnt)&#123;</span><br><span class="line">    <span class="keyword">return</span> tn[p].val;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(trank &gt; tn[tn[p].l].size + tn[p].cnt)&#123;</span><br><span class="line">    <span class="keyword">return</span> get_val_by_rank(tn[p].r, trank - tn[tn[p].l].size - tn[p].cnt);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_rank_by_val</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> tval)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(p == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span>(tn[p].val == tval)&#123;</span><br><span class="line">    <span class="keyword">return</span> tn[tn[p].l].size + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(tval &lt; tn[p].val)&#123;</span><br><span class="line">    <span class="keyword">return</span> get_rank_by_val(tn[p].l, tval);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(tval &gt; tn[p].val)&#123;</span><br><span class="line">    <span class="keyword">return</span> get_rank_by_val(tn[p].r, tval) + tn[tn[p].l].size + tn[p].cnt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zig</span><span class="params">(<span class="keyword">int</span> &amp;p)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> q = tn[p].l;</span><br><span class="line">  tn[p].l = tn[q].r;</span><br><span class="line">  tn[q].r = p;</span><br><span class="line">  p = q;</span><br><span class="line">  update(tn[p].r);</span><br><span class="line">  update(p);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zag</span><span class="params">(<span class="keyword">int</span> &amp;p)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> q = tn[p].r;</span><br><span class="line">  tn[p].r = tn[q].l;</span><br><span class="line">  tn[q].l = p;</span><br><span class="line">  p = q;</span><br><span class="line">  update(tn[p].l);</span><br><span class="line">  update(p);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">tn_insert</span><span class="params">(<span class="keyword">int</span> &amp;p, <span class="keyword">int</span> tval)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(p == <span class="number">0</span>)&#123;</span><br><span class="line">    p = new_node(tval);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(tn[p].val == tval)&#123;</span><br><span class="line">    tn[p].cnt++;</span><br><span class="line">  &#125;<span class="keyword">else</span> <span class="keyword">if</span>(tval &lt; tn[p].val)&#123;</span><br><span class="line">    tn_insert(tn[p].l, tval);</span><br><span class="line">    <span class="keyword">if</span>(tn[tn[p].l].key &gt; tn[p].key)&#123;</span><br><span class="line">      zig(p);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;<span class="keyword">else</span> <span class="keyword">if</span>(tval &gt; tn[p].val)&#123;</span><br><span class="line">    tn_insert(tn[p].r, tval);</span><br><span class="line">    <span class="keyword">if</span>(tn[tn[p].r].key &gt; tn[p].key)&#123;</span><br><span class="line">      zag(p);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  update(p);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_pre</span><span class="params">(<span class="keyword">int</span> tval)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> ans = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> p = treap_root;</span><br><span class="line">  <span class="keyword">while</span>(p)&#123;</span><br><span class="line">    <span class="keyword">if</span>(tn[p].val == tval)&#123;</span><br><span class="line">      <span class="keyword">if</span>(tn[p].l)&#123;</span><br><span class="line">        p = tn[p].l;</span><br><span class="line">        <span class="keyword">while</span>(tn[p].r)&#123;</span><br><span class="line">          p = tn[p].r;</span><br><span class="line">        &#125;</span><br><span class="line">        ans = p;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(tn[p].val &gt; tn[ans].val &amp;&amp; tn[p].val &lt; tval)&#123;</span><br><span class="line">      ans = p;</span><br><span class="line">    &#125;</span><br><span class="line">    p = tval &lt; tn[p].val ? tn[p].l : tn[p].r;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tn[ans].val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_post</span><span class="params">(<span class="keyword">int</span> tval)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> p = treap_root;</span><br><span class="line">  <span class="keyword">int</span> ans = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">while</span>(p)&#123;</span><br><span class="line">    <span class="keyword">if</span>(tn[p].val == tval)&#123;</span><br><span class="line">      <span class="keyword">if</span>(tn[p].r)&#123;</span><br><span class="line">        p = tn[p].r;</span><br><span class="line">        <span class="keyword">while</span>(tn[p].l)&#123;</span><br><span class="line">          p = tn[p].l;</span><br><span class="line">        &#125;</span><br><span class="line">        ans = p;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(tn[p].val &lt; tn[ans].val &amp;&amp; tn[p].val &gt; tval)&#123;</span><br><span class="line">      ans = p;</span><br><span class="line">    &#125;</span><br><span class="line">    p = tval &lt; tn[p].val ? tn[p].l : tn[p].r;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tn[ans].val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">tn_remove</span><span class="params">(<span class="keyword">int</span> &amp;p, <span class="keyword">int</span> tval)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(p == <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">if</span>(tval == tn[p].val)&#123;</span><br><span class="line">    <span class="keyword">if</span>(tn[p].cnt &gt; <span class="number">1</span>)&#123;</span><br><span class="line">      tn[p].cnt--;</span><br><span class="line">      update(p);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(tn[p].l || tn[p].r)&#123;</span><br><span class="line">      <span class="keyword">if</span>(!tn[p].r || tn[tn[p].l].key &gt; tn[tn[p].r].key)&#123;</span><br><span class="line">        zig(p);</span><br><span class="line">        tn_remove(tn[p].r, tval);</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        zag(p);</span><br><span class="line">        tn_remove(tn[p].l, tval);</span><br><span class="line">      &#125;</span><br><span class="line">      update(p);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      p = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(tval &lt; tn[p].val)&#123;</span><br><span class="line">    tn_remove(tn[p].l, tval);</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    tn_remove(tn[p].r, tval);</span><br><span class="line">  &#125;</span><br><span class="line">  update(p);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  srand(RNDS);</span><br><span class="line">  init();</span><br><span class="line">  <span class="keyword">int</span> opn, optype, opx;</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;opn);</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> opnt=<span class="number">0</span>; opnt&lt;opn; opnt++)&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>, &amp;optype, &amp;opx);</span><br><span class="line">    <span class="keyword">switch</span>(optype)&#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        tn_insert(treap_root, opx);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        tn_remove(treap_root, opx);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, get_rank_by_val(treap_root, opx) - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, get_val_by_rank(treap_root, opx + <span class="number">1</span>));</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, get_pre(opx));</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, get_post(opx));</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="/treap-implementation/treap_ac.png" title="Treap AC Record on BZOJ">
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OI/" rel="tag"># OI</a>
+          
+            <a href="/tags/Programming/" rel="tag"># Programming</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/easy-become-difficult/" rel="next" title="不要把简单的问题搞得很复杂，最后还AC不了！">
+                <i class="fa fa-chevron-left"></i> 不要把简单的问题搞得很复杂，最后还AC不了！
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/code-submission-checklist/" rel="prev" title="代码提交检查表">
+                代码提交检查表 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yuchen Zhong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/davidzyc" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yuchen_zhong2016@stu.swfla.org" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://sam.shuye.tk/" title="SAM" target="_blank">SAM</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Treap易错点"><span class="nav-number">1.</span> <span class="nav-text">Treap易错点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完整代码"><span class="nav-number">2.</span> <span class="nav-text">完整代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuchen Zhong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
