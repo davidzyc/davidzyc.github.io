@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <title>Labyrinth Game</title>
+  </head>
+  <body>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+      
+    <div id="labyrinth">
+
+    <div class="container-fluid pt-4">
+          <div class="row">
+              <div class="col-sm-8">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- <h4>当前选择</h4> -->
+                        <table class="table table-bordered" style="table-layout: fixed;">
+                            <tr>
+                                <td>
+                                    <table class="table table-bordered" >
+                                        <tr>
+                                            <td>知识</td>
+                                            <td>{{ k }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>情感</td>
+                                            <td>{{ e }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>娱乐</td>
+                                            <td>{{ en }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>人际关系</td>
+                                            <td>{{ r }}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <!-- <button type="button" :disabled="!up_on"  v-on:click="go_up" class="btn btn-primary btn-lg btn-block">上</button> -->
+                                    <img class="img-fluid mb-3" v-if="up_on" :src="up_img" data-toggle="modal" data-target="#upDetail">
+                                    <!-- <p v-if="up_on">{{ up_desc }}</p> -->
+                                    <!-- <h1 v-if="!up_on" class="font-weight-lighter text-center mb-4">当前，该格子不可用</h1> -->
+                                    <img v-if="!up_on" class="img-fluid mb-3" src="block.png">
+                                </td>
+                                <td>
+                                    <table class="table table-bordered" >
+                                        <tr>
+                                            <td>健康</td>
+                                            <td>{{ h }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>技能</td>
+                                            <td>{{ s }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>阅历</td>
+                                            <td>{{ ex }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>体力</b></td>
+                                            <td><b>{{ cost }}</b></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!-- <button type="button" :disabled="!left_on"  v-on:click="go_left" class="btn btn-warning btn-lg btn-block">左</button> -->
+                                    <img class="img-fluid mb-3" v-if="left_on" :src="left_img" data-toggle="modal" data-target="#leftDetail">
+                                    <!-- <p v-if="left_on">{{ left_desc }}</p> -->
+                                    <!-- <h1 v-if="!left_on" class="font-weight-lighter text-center mb-4">当前，该格子不可用</h1> -->
+                                    <img v-if="!left_on" class="img-fluid mb-3" src="block.png">
+                                </td>
+                                <td>
+                                    <img class="img-fluid mb-3" v-if="now_on" :src="now_img" data-toggle="modal" data-target="#nowDetail">
+                                    <!-- <p v-if="now_on">{{ now_desc }}</p> -->
+                                </td>
+                                <td>
+                                    <!-- <button type="button" :disabled="!right_on"  v-on:click="go_right" class="btn btn-danger btn-lg btn-block">右</button> -->
+                                    <img class="img-fluid mb-3" v-if="right_on" :src="right_img" data-toggle="modal" data-target="#rightDetail">
+                                    <!-- <p v-if="right_on">{{ right_desc }}</p> -->
+                                    <!-- <h1 v-if="!right_on" class="font-weight-lighter text-center mb-4">当前，该格子不可用</h1> -->
+                                    <img v-if="!right_on" class="img-fluid mb-3" src="block.png">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <!-- <button type="button" :disabled="!down_on"  v-on:click="go_down" class="btn btn-success btn-lg btn-block">下</button> -->
+                                    <img class="img-fluid mb-3" v-if="down_on" :src="down_img" data-toggle="modal" data-target="#downDetail">
+                                    <!-- <p v-if="down_on">{{ down_desc }}</p> -->
+                                    <!-- <h1 v-if="!down_on" class="font-weight-lighter text-center mb-4">当前，该格子不可用</h1> -->
+                                    <img v-if="!down_on" class="img-fluid mb-3" src="block.png">
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                  </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- <h1 class="font-weight-lighter text-center mb-4">“选择”迷宫</h1> -->
+                        <div class="row">
+                          <div class="col-sm-4">
+                          </div>
+                          <div class="col-sm-4">
+                            <button type="button" :disabled="!up_on"  v-on:click="go_up" class="btn btn-primary btn-block">上</button>
+                          </div>
+                          <div class="col-sm-4">
+                          </div>
+                        </div>
+                        <div class="row mt-4">
+                          <div class="col-sm-4">
+                            <button type="button" :disabled="!left_on"  v-on:click="go_left" class="btn btn-warning btn-block">左</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button type="button" :disabled="!down_on"  v-on:click="go_down" class="btn btn-success btn-block">下</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button type="button" :disabled="!right_on"  v-on:click="go_right" class="btn btn-danger btn-block">右</button>
+                          </div>
+                        </div>
+                        <!-- <div class="btn-group btn-block" role="group">
+                          </div> -->
+                        <hr>
+                        <h4>体力</h4>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" :style="{'width': this.cost+'%'}" :aria-valuenow="cost" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <hr>
+                        <h4>地图</h4>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>{{ laby_map[0] }}</td>
+                                <td>{{ laby_map[1] }}</td>
+                                <td>{{ laby_map[2] }}</td>
+                                <td>{{ laby_map[3] }}</td>
+                                <td>{{ laby_map[4] }}</td>
+                                <td>{{ laby_map[5] }}</td>
+                                <td>{{ laby_map[6] }}</td>
+                                <td>{{ laby_map[7] }}</td>
+                                <td>{{ laby_map[8] }}</td>
+                                <td>{{ laby_map[9] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[10] }}</td>
+                                <td>{{ laby_map[11] }}</td>
+                                <td>{{ laby_map[12] }}</td>
+                                <td>{{ laby_map[13] }}</td>
+                                <td>{{ laby_map[14] }}</td>
+                                <td>{{ laby_map[15] }}</td>
+                                <td>{{ laby_map[16] }}</td>
+                                <td>{{ laby_map[17] }}</td>
+                                <td>{{ laby_map[18] }}</td>
+                                <td>{{ laby_map[19] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[20] }}</td>
+                                <td>{{ laby_map[21] }}</td>
+                                <td>{{ laby_map[22] }}</td>
+                                <td>{{ laby_map[23] }}</td>
+                                <td>{{ laby_map[24] }}</td>
+                                <td>{{ laby_map[25] }}</td>
+                                <td>{{ laby_map[26] }}</td>
+                                <td>{{ laby_map[27] }}</td>
+                                <td>{{ laby_map[28] }}</td>
+                                <td>{{ laby_map[29] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[30] }}</td>
+                                <td>{{ laby_map[31] }}</td>
+                                <td>{{ laby_map[32] }}</td>
+                                <td>{{ laby_map[33] }}</td>
+                                <td>{{ laby_map[34] }}</td>
+                                <td>{{ laby_map[35] }}</td>
+                                <td>{{ laby_map[36] }}</td>
+                                <td>{{ laby_map[37] }}</td>
+                                <td>{{ laby_map[38] }}</td>
+                                <td>{{ laby_map[39] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[40] }}</td>
+                                <td>{{ laby_map[41] }}</td>
+                                <td>{{ laby_map[42] }}</td>
+                                <td>{{ laby_map[43] }}</td>
+                                <td>{{ laby_map[44] }}</td>
+                                <td>{{ laby_map[45] }}</td>
+                                <td>{{ laby_map[46] }}</td>
+                                <td>{{ laby_map[47] }}</td>
+                                <td>{{ laby_map[48] }}</td>
+                                <td>{{ laby_map[49] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[50] }}</td>
+                                <td>{{ laby_map[51] }}</td>
+                                <td>{{ laby_map[52] }}</td>
+                                <td>{{ laby_map[53] }}</td>
+                                <td>{{ laby_map[54] }}</td>
+                                <td>{{ laby_map[55] }}</td>
+                                <td>{{ laby_map[56] }}</td>
+                                <td>{{ laby_map[57] }}</td>
+                                <td>{{ laby_map[58] }}</td>
+                                <td>{{ laby_map[59] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[60] }}</td>
+                                <td>{{ laby_map[61] }}</td>
+                                <td>{{ laby_map[62] }}</td>
+                                <td>{{ laby_map[63] }}</td>
+                                <td>{{ laby_map[64] }}</td>
+                                <td>{{ laby_map[65] }}</td>
+                                <td>{{ laby_map[66] }}</td>
+                                <td>{{ laby_map[67] }}</td>
+                                <td>{{ laby_map[68] }}</td>
+                                <td>{{ laby_map[69] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[70] }}</td>
+                                <td>{{ laby_map[71] }}</td>
+                                <td>{{ laby_map[72] }}</td>
+                                <td>{{ laby_map[73] }}</td>
+                                <td>{{ laby_map[74] }}</td>
+                                <td>{{ laby_map[75] }}</td>
+                                <td>{{ laby_map[76] }}</td>
+                                <td>{{ laby_map[77] }}</td>
+                                <td>{{ laby_map[78] }}</td>
+                                <td>{{ laby_map[79] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[80] }}</td>
+                                <td>{{ laby_map[81] }}</td>
+                                <td>{{ laby_map[82] }}</td>
+                                <td>{{ laby_map[83] }}</td>
+                                <td>{{ laby_map[84] }}</td>
+                                <td>{{ laby_map[85] }}</td>
+                                <td>{{ laby_map[86] }}</td>
+                                <td>{{ laby_map[87] }}</td>
+                                <td>{{ laby_map[88] }}</td>
+                                <td>{{ laby_map[89] }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ laby_map[90] }}</td>
+                                <td>{{ laby_map[91] }}</td>
+                                <td>{{ laby_map[92] }}</td>
+                                <td>{{ laby_map[93] }}</td>
+                                <td>{{ laby_map[94] }}</td>
+                                <td>{{ laby_map[95] }}</td>
+                                <td>{{ laby_map[96] }}</td>
+                                <td>{{ laby_map[97] }}</td>
+                                <td>{{ laby_map[98] }}</td>
+                                <td>{{ laby_map[99] }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                  </div>
+                  <audio id="myaudio" src="sound.mp4" controls="controls" autoplay loop="true"></audio>
+              </div>
+          </div>
+      </div>
+
+      <div class="container-fluid">
+          <hr>
+          <p>A Demo Game for GESH1010 Course</p>
+      </div>
+
+      <div id="successDialog" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">游戏成功</h5>
+            </div>
+            <div class="modal-body">
+              <p>恭喜你，您成功走出了迷宫，顺利走完了大学四年。现在回顾起在迷宫中走过的曲折的路。起初，站在空白的方格中，你也许迷茫过，但那迈出的第一步就是直面未知的勇气；四处碰壁，你也许想放弃过，但抬起头继续向前也许是对这些不可控最好的应对；有时勇往直前，不一定是最好的选择；有时向后退一步，不一定是退缩，而是重新的开始；考试、恋情、实习，这些因素会带给你苦或甜，丰富的经验或是遍体鳞伤的挫折，但你仍然坚持着走完了大学迷宫。去看看自己收获的经验，你定会为自己的成长感到骄傲！</p>
+              <hr>
+
+              <table class="table table-bordered" >
+                <tr>
+                    <td>知识</td>
+                    <td>{{ k }}</td>
+                    <td>健康</td>
+                    <td>{{ h }}</td>
+                </tr>
+                <tr>
+                    <td>情感</td>
+                    <td>{{ e }}</td>
+                    <td>技能</td>
+                    <td>{{ s }}</td>
+                </tr>
+                <tr>
+                    <td>娱乐</td>
+                    <td>{{ en }}</td>
+                    <td>阅历</td>
+                    <td>{{ ex }}</td>
+                </tr>
+                <tr>
+                    <td>人际关系</td>
+                    <td>{{ r }}</td>
+                    <td><b>体力</b></td>
+                    <td><b>{{ cost }}</b></td>
+                </tr>
+            </table>
+
+            <hr>
+            <h4>创作团队</h4>
+            <p>创作：仲宇辰（程序编写）易简（地图，部分文案）健华（数据）辛奕圻（部分文案、结尾弹窗）邓刘逸舟（绘画）</p>
+
+              <hr>
+              <h4>致谢</h4>
+              <p>本项目的完成离不开下列开放源代码项目，调用或使用了来自以下链接的部分代码。在此作者向这些开源项目表示感谢。</p>
+              <ul>
+                  <li>Bootstrap 4 - https://getbootstrap.net/</li>
+                  <li>Vue.js 2 - https://cn.vuejs.org/v2/</li>
+                  <li>Jquery - https://jquery.com/</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="failDialog" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">游戏失败</h5>
+            </div>
+            <div class="modal-body">
+              <p>很遗憾，你的体力耗尽了还没有走出迷宫。但请不要沮丧，这样结果不代表你是失败者，面对要走出的每一步，任何人都是未知的，可能你要做的事和自己的愿景差强人意，也可能是下一步耗费了太多体力，亦或是让你四处碰壁。有时走得顺，不代表收获累累，回看经验值，你会发现虽然道路坎坷，但你同样在收获和成长，你也会为自己一路走来的历程感到骄傲！</p>
+              <hr>
+
+              <table class="table table-bordered" >
+                <tr>
+                    <td>知识</td>
+                    <td>{{ k }}</td>
+                    <td>健康</td>
+                    <td>{{ h }}</td>
+                </tr>
+                <tr>
+                    <td>情感</td>
+                    <td>{{ e }}</td>
+                    <td>技能</td>
+                    <td>{{ s }}</td>
+                </tr>
+                <tr>
+                    <td>娱乐</td>
+                    <td>{{ en }}</td>
+                    <td>阅历</td>
+                    <td>{{ ex }}</td>
+                </tr>
+                <tr>
+                    <td>人际关系</td>
+                    <td>{{ r }}</td>
+                    <td><b>体力</b></td>
+                    <td><b>{{ cost }}</b></td>
+                </tr>
+            </table>
+
+            <hr>
+            <h4>创作团队</h4>
+            <p>创作：仲宇辰（程序编写）易简（地图，部分文案）健华（数据）辛奕圻（部分文案、结尾弹窗）邓刘逸舟（绘画）</p>
+
+              <hr>
+              <h4>致谢</h4>
+              <p>本项目的完成离不开下列开放源代码项目，调用或使用了来自以下链接的部分代码。在此作者向这些开源项目表示感谢。</p>
+              <ul>
+                  <li>Bootstrap 4 - https://getbootstrap.net/</li>
+                  <li>Vue.js 2 - https://cn.vuejs.org/v2/</li>
+                  <li>Jquery - https://jquery.com/</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div id="operationDialog" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">您的选择结果</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-6">
+                    <img class="img-fluid mb-3" v-if="now_on" :src="now_img">
+                </div>
+                <div class="col-sm-6" v-html="now_desc"></div>
+            </div>
+              <p>当前操作，您的收获和消耗如下</p>
+
+              <table class="table table-bordered" >
+                <tr>
+                    <td>知识</td>
+                    <td>+{{ this.action_prop[this.now_id].k + this.rand_score }}</td>
+                    <td>健康</td>
+                    <td>+{{ this.action_prop[this.now_id].h + this.rand_score }}</td>
+                </tr>
+                <tr>
+                    <td>情感</td>
+                    <td>+{{ this.action_prop[this.now_id].e + this.rand_score }}</td>
+                    <td>技能</td>
+                    <td>+{{ this.action_prop[this.now_id].s + this.rand_score }}</td>
+                </tr>
+                <tr>
+                    <td>娱乐</td>
+                    <td>+{{ this.action_prop[this.now_id].en + this.rand_score }}</td>
+                    <td>阅历</td>
+                    <td>+{{ this.action_prop[this.now_id].ex + this.rand_score }}</td>
+                </tr>
+                <tr>
+                    <td>人际关系</td>
+                    <td>+{{ this.action_prop[this.now_id].r + this.rand_score }}</td>
+                    <td><b>体力</b></td>
+                    <td><b>-{{ this.action_prop[this.now_id].cost + this.rand_score }}</b></td>
+                </tr>
+            </table>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left -->
+      <div class="modal fade" id="leftDetail" tabindex="-1" aria-labelledby="leftDetailLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="leftDetailLabel">当前位置左边格子的详情</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img class="img-fluid mb-3" v-if="left_on" :src="left_img">
+                    </div>
+                    <div class="col-sm-6" v-html="left_desc"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Right -->
+      <div class="modal fade" id="rightDetail" tabindex="-1" aria-labelledby="rightDetailLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="rightDetailLabel">当前位置右边格子的详情</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img class="img-fluid mb-3" v-if="right_on" :src="right_img">
+                    </div>
+                    <div class="col-sm-6" v-html="right_desc"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- up -->
+      <div class="modal fade" id="upDetail" tabindex="-1" aria-labelledby="upDetailLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="upDetailLabel">当前位置上边格子的详情</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img class="img-fluid mb-3" v-if="up_on" :src="up_img">
+                    </div>
+                    <div class="col-sm-6" v-html="up_desc"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- down -->
+      <div class="modal fade" id="downDetail" tabindex="-1" aria-labelledby="downDetailLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="downDetailLabel">当前位置下边格子的详情</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img class="img-fluid mb-3" v-if="down_on" :src="down_img">
+                    </div>
+                    <div class="col-sm-6" v-html="down_desc"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- now -->
+      <div class="modal fade" id="nowDetail" tabindex="-1" aria-labelledby="nowDetailLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="nowDetailLabel">当前位置的详情</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img class="img-fluid mb-3" v-if="now_on" :src="now_img">
+                    </div>
+                    <div class="col-sm-6" v-html="now_desc"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+      <script>
+        
+            var labyrinth = new Vue({
+                el: '#labyrinth',
+                data: {
+                    up_on: true,
+                    up_desc: 'Hello World',
+                    up_img: 'test.jpg',
+                    left_on: true,
+                    left_desc: 'Hello World',
+                    left_img: 'test.jpg',
+                    right_on: true,
+                    right_desc: 'Hello World',
+                    right_img: 'test.jpg',
+                    down_on: true,
+                    down_desc: 'Hello World',
+                    down_img: 'test.jpg',
+                    now_on: true,
+                    now_desc: 'Hello World',
+                    now_img: 'test.jpg',
+                    up_id: 1,
+                    left_id: 10,
+                    right_id: 12,
+                    down_id: 21,
+                    now_id: 11,
+                    rand_score: 0,
+                    laby_map: [
+                        'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 
+                        'X', '', 'X', '', '', '', '', '', '', 'E', 
+                        'E', '', '', '', '', '', '', '', '', 'X', 
+                        'X', '', '', '', 'X', '', '', '', '', 'X', 
+                        'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', '', 'X', 
+                        'X', '', '', '', 'X', '', 'X', '', '', 'X', 
+                        'X', '', '', '', '', '', '', '', '', 'X', 
+                        'X', 'O', '', '', '', '', '', '', 'X', 'X', 
+                        'X', '', '', '', 'X', '', '', '', 'X', 'X', 
+                        'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'
+                    ],
+                    desc_text: [
+                        '0',
+                        '1',
+                        '2',
+                        '3',
+                        '4',
+                        '5',
+                        '6',
+                        '7',
+                        '8',
+                        '9',
+                        '10',
+                        '拍拖：有之前的经历让你变得谨慎，经过长时间的相处和了解，你们认定了对方就是自己最爱的人，情感经历max',
+                        '12',
+                        '学习：快毕业了，你两耳不闻窗外事，一心只读圣贤书，向着你的理想高歌猛进，干巴爹！',
+                        '运动：整天宅在家里，你感觉有点闷。于是，你出去运动。户外空气格外新鲜，你自由地活动、慢跑。&nbsp;你感到血液流动，感到生命的脉动，感到灵魂地苏醒，焕然一新。运动了一会，你发现思绪变得清楚了，郁结的心情变得舒畅了，你更有信心面对接下来的挑战了。',
+                        '看手机：一节普通的没有要求开麦开cam的lecture……你突然觉得眼前的ppt并不是你的真爱。你拿起手机。在QQ微信上聊天，精神百倍。',
+                        '学习：昨夜西风调碧树，独上高楼，望尽天涯路。大三的你已经能上与利用学校的资源，如鱼得水、自主地学习。',
+                        '上庄：临近毕业，你还是放不下那个社团……你抽出时间教后来者如何管理运营，让社团后继有人。',
+                        '实习：临近毕业，你急需实习来增长工作经历。你去有关单位进行了一段时间的实习。',
+                        '提前毕业！优秀就是超越自我，就是用三年完成普通人四年才能完成的学业！',
+                        '本科毕业！&nbsp;恭喜！&nbsp;祝 前程似锦！',
+                        '学习：一个接一个的due空降，还有各种quiz、presen，线上考试……你从容应对，合理安排时间复习，写作业，倾坡，休息，收获了理想的分数。',
+                        '学习：临近final，面临一大波考试和due，你认真准备，整理笔记，复习课件，询问教授、TA、同学，也不吝惜向其他同学提供帮助。',
+                        '运动：你出去到绿茵场上踢足球。奔跑中你感到了运动的快乐，感受到生命的美好、青春的美好',
+                        '联谊晚会：又是一个联谊晚会。由于你已经是老鬼，认识大多数人，当之无愧地成为了焦点。你组织众人进行了一些破冰行动、交谊活动，非常成功。',
+                        '实习：你又抓住了一个实习的机会，去了一所你向往的单位进行了实习。',
+                        '兴趣爱好：你回忆了一下，想起高中时很想做但没有机会做的事情：摄影。你拿出一天的时间，跑到外面，拿着业余的手机，走遍各个地方，寻找角度拍照，调焦，调色……回到家里，看着自己的作品，很有成就感。',
+                        '学习：大学生涯过半，你已有了丰富的学习经验。你没有显得老油条，而是更加刻苦的学习。',
+                        '当组爸妈：新的学年开始了，你从一个新生变成了一个老鬼。你深知新生急需引导帮助（宿分），于是在MUA报名成为了一名组家长。组家长的责任是重大的，也是很累的，但你在与其他组家长的协作中，在与新生的互动中结交了许多朋友，也学到了很多',
+                        '29',
+                        '30',
+                        '实习：你在假期到校外实习，虽然都是些无关紧要的工作，但你也看到了工作单位的生活，不再是生活在象牙塔里了。',
+                        '海外交换：在相处中你学会了自立，学会了与人交流，认识了更多有趣的灵魂，当然也学到了很多有用的知识。',
+                        '上庄：作为社团核心成员，你需要做很多工作：宣传，外务，财务……你不是freerider也不是甩锅侠，你不仅把自己管理的部分做的好，还尽力为了社团奔走联络。',
+                        '34',
+                        '运动：整天宅在家里，你感觉有点闷。于是，你出去运动。户外地空气格外新鲜，你自由地活动、慢跑。',
+                        '海外交换：正好有海外交换的项目，你决定一试，并幸运地申请成功。你作为交换生前往那所学校，与外国的青年交流、共同学习。',
+                        '拍拖：你发现你喜欢的人并不真的喜欢你，即使交往，也没有走到最后，你第一次感到爱情也会如此痛苦，但也丰富了你的人生阅历。',
+                        '实习：你申请了那个看似不可能的实习，竟然成功了。&nbsp;你怀着忐忑的心，拿出120%的精力，在单位努力表现',
+                        '39',
+                        '40',
+                        '41',
+                        '42',
+                        '43',
+                        '44',
+                        '45',
+                        '46',
+                        '47',
+                        '学习：上lecture你认真听课，上tutorial你踊跃发言，作业你也认真对待一丝不苟。',
+                        '49',
+                        '50',
+                        '学习：在各种各样的活动与选择之间，你沉下心来，没有耽误专业课。',
+                        '第一次：善衡的高桌晚宴一直被赋予一种魔幻的色彩，当你第一次接触它，你发现它不仅是“哈利波特”式的高桌餐厅，还是环境优质的联谊场所，与身边的同学们高谈阔论，听嘉宾教授的激情演讲，不知不觉中，你的社交技巧得到了显著提高。',
+                        '拍拖：关关雎鸠，在河之洲。ta对你还是那么有吸引力，至今难忘。',
+                        '54',
+                        '游戏：作业有点难，你卡住了。在僵持中你突然想起今天还没有登录wzry签到，首胜也还没拿。&nbsp;于是你找到手机，快乐游戏。',
+                        '56',
+                        '游学旅行：世界很大，你想去国外看看。说走就走。你去了好几所世界闻名的大学校园，体验了了它们的学术氛围；异国的风光也是你从没见过的。你四处游历、体会、学习。那是一段宝贵的时光。&nbsp;“你累积了许多飞行，你用心挑选纪念品，你搜集了图上每一次的风和日丽，你拥抱热情的岛屿，你埋葬记忆的土耳其。”（歌词自Cheer Chen《旅行的意义》）',
+                        '兴趣爱好：在一次又一次的聚会中，你认识到了会唱歌的好处。你开始学唱歌。渐渐的你的歌声可以跟随你的心意，几次尝试后你也不再怯场。',
+                        '59',
+                        '60',
+                        '大小o：刚接到入学通知，就有不少学长学姐主动加微信拉群，热心答疑还请我们主动问问题，你感到受宠若惊。还有每天晚上的线上组聚，玩脑残游戏、夜话、狼人杀、接尾骨……接下来就是大o了。&nbsp;由于大部分人讲的是粤语，你听不懂，你有点自闭。但是通过一些非语言的观察你发现其实他们都是很热心很有趣的。',
+                        '看手机：在一节普通的没有要求开麦开kam的课时……你突然觉得眼前的ppt并不是你的真爱。你拿起手机。在QQ微信上聊天。',
+                        '学习：身边的活动一桩接着一桩，你还有作业要写……你保持学习方面的时间投入，也不错过活动。牺牲的是玩游戏的时间，和少量的睡眠和头发',
+                        '当组爸妈：恭喜，你已经是一名老鬼了！&nbsp;中大传统马甲、脑残游戏、接尾骨……&nbsp;你迫不及待地报名成为一名组家长',
+                        '学习：作业/考试的成绩陆续派发。你对自己的成绩不太满意，觉得烂龟了。但你知道了问题出在哪里。你加倍的努力。',
+                        '运动：整天宅在家里，你感觉有点闷。于是，你出去运动。户外地空气格外新鲜，你自由地活动、慢跑。',
+                        '学习：上lecture你认真听课，上tutorial你踊跃发言，作业你也认真对待一丝不苟。',
+                        '兴趣爱好：你开始学吉他，因为能弹流行歌，也很酷。经过一段时间的练习，效果明显。',
+                        '69',
+                        '70',
+                        '本科入学:梦开始的地方。&nbsp;逐梦港中文！',
+                        '学习:初入大学，你发现有各种各样的课，从理工、人文社科到商学、医学，包罗万有、供君选择。',
+                        '游戏：作业有点难，你卡住了。在僵持中你突然想起今天还没有登录wzry签到，首胜也还没拿。于是你找到手机，快乐游戏。',
+                        '游学旅行：世界很大，你想出去看看。你终于说服爸妈提供支持，供你出国游学。身在国外，自由游荡，体会风情，你有了一蓑烟雨任平生的感觉。',
+                        '拍拖：你与男/女朋友共同度过了一个美好的下午：逛街、买东西、喝奶茶、共进晚餐、看电影。&nbsp;如花美眷，似水流年。',
+                        '兴趣爱好：你开始尝试视频剪辑。&nbsp;生产的愉悦感让你经常熬到很晚还在肝视频，但是能自我创作的感觉真的很不错。',
+                        '联谊晚会：有个联谊晚会，有很多你不认识、在你圈子以外的人参加，包括local，亚洲其他地区甚至欧美的同学参加。你暂时停止赶due和学习，精心着装，在那个晚上准时出席。你举止得体，表现自然，对各种话题都表现出很感兴趣的样子。通过一些寒暄和交流，你认识了一些志同道合的同学，一些同专业的同学，一些有趣的人、一些国外的友人。你的眼界变得开阔了。',
+                        '78',
+                        '79',
+                        '80',
+                        '学习：你发现有的课“chill”，有的课“chur”，有的老师随和“给龟”慷慨，有的老师“kill”。',
+                        '上庄：你发现了一个感兴趣的社团。你决定一试。你申请上庄，成为了一名干事。',
+                        '运动：整天宅在家里，你感觉有点闷。于是，你出去运动。户外地空气格外新鲜，你自由地活动、慢跑。',
+                        '84',
+                        '看手机：在一节普通的没有要求开麦开kam的课时……&nbsp;你突然觉得眼前的ppt并不是你的真爱。你拿起手机。在QQ微信上聊天。',
+                        '学习：又空降due了！又出分了！又要倾坡了！你又开始忙碌了。加油，打工人！',
+                        '游戏：作业有点难，你卡住了。&nbsp;在僵持中你突然想起今天还没有登录wzry签到，首胜也还没拿。于是你找到手机，快乐游戏。',
+                        '88',
+                        '89',
+                        '90',
+                        '91',
+                        '92',
+                        '93',
+                        '94',
+                        '95',
+                        '96',
+                        '97',
+                        '98',
+                        '99'
+                    ],
+                    img_src: [
+                        '0',
+                        '1',
+                        '2',
+                        '3',
+                        '4',
+                        '5',
+                        '6',
+                        '7',
+                        '8',
+                        '9',
+                        '10',
+                        'love.jpg',
+                        '12',
+                        'study.jpg',
+                        'sports.jpg',
+                        'vedio.png',
+                        'study.jpg',
+                        'shangzhuang.png',
+                        'internship.png',
+                        'graduation.png',
+                        'graduation.png',
+                        'study.jpg',
+                        'study.jpg',
+                        'sports.jpg',
+                        'lianyi.png',
+                        'internship.png',
+                        'habit.png',
+                        'study.jpg',
+                        'ocamp.png',
+                        '29',
+                        '30',
+                        'internship.png',
+                        'haiwai.jpg',
+                        'shangzhuang.png',
+                        '34',
+                        'sports.jpg',
+                        'haiwai.jpg',
+                        'love.jpg',
+                        'internship.png',
+                        '39',
+                        '40',
+                        '41',
+                        '42',
+                        '43',
+                        '44',
+                        '45',
+                        '46',
+                        '47',
+                        'study.jpg',
+                        '49',
+                        '50',
+                        'study.jpg',
+                        'lianyi.png',
+                        'prelove.png',
+                        '54',
+                        'game.jpg',
+                        '56',
+                        'traveling.png',
+                        'habit.png',
+                        '59',
+                        '60',
+                        'ocamp.png',
+                        'vedio.png',
+                        'study.jpg',
+                        'ocamp.png',
+                        'study.jpg',
+                        'sports.jpg',
+                        'study.jpg',
+                        'habit.png',
+                        '',
+                        '',
+                        'start.png',
+                        'study.jpg',
+                        'game.jpg',
+                        'traveling.png',
+                        'love.jpg',
+                        'habit.png',
+                        'lianyi.png',
+                        '78',
+                        '79',
+                        '80',
+                        'study.jpg',
+                        'shangzhuang.png',
+                        'sports.jpg',
+                        '84',
+                        'vedio.png',
+                        'study.jpg',
+                        'game.jpg',
+                        '88',
+                        '89',
+                        '90',
+                        '91',
+                        '92',
+                        '93',
+                        '94',
+                        '95',
+                        '96',
+                        '97',
+                        '98',
+                        '99'
+                    ],
+                    action_prop: [
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//0
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//1
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//2
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//3
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//4
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//5
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//6
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//7
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//8
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//9
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//10
+                        { k: 1, e: 5, en: 3, r: 2, h: 1, s: 1, ex: 3, cost: 7 },//11
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//12
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//13
+                        { k: 2, e: 1, en: 3, r: 2, h: 5, s: 1, ex: 2, cost: 2 },//14
+                        { k: 1, e: 1, en: 5, r: 2, h: 1, s: 1, ex: 1, cost: 1 },//15
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//16
+                        { k: 2, e: 1, en: 2, r: 4, h: 1, s: 3, ex: 4, cost: 5 },//17
+                        { k: 3, e: 1, en: 2, r: 3, h: 1, s: 4, ex: 3, cost: 5 },//18
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//19
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//20
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//21
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//22
+                        { k: 2, e: 1, en: 3, r: 3, h: 5, s: 1, ex: 2, cost: 2 },//23
+                        { k: 1, e: 3, en: 3, r: 4, h: 1, s: 2, ex: 3, cost: 4 },//24
+                        { k: 3, e: 1, en: 2, r: 3, h: 1, s: 4, ex: 3, cost: 5 },//25
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 4, ex: 2, cost: 3 },//26
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//27
+                        { k: 2, e: 3, en: 3, r: 3, h: 1, s: 1, ex: 3, cost: 4 },//28
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//29
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//30
+                        { k: 3, e: 1, en: 2, r: 3, h: 1, s: 4, ex: 3, cost: 5 },//31
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 3, ex: 5, cost: 9 },//32
+                        { k: 2, e: 1, en: 2, r: 4, h: 1, s: 3, ex: 4, cost: 5 },//33
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//34
+                        { k: 2, e: 1, en: 3, r: 3, h: 5, s: 1, ex: 2, cost: 3 },//35
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 3, ex: 5, cost: 9 },//36
+                        { k: 1, e: 5, en: 3, r: 2, h: 1, s: 1, ex: 3, cost: 7 },//37
+                        { k: 3, e: 1, en: 2, r: 3, h: 1, s: 4, ex: 3, cost: 5 },//38
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//39
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//40
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//41
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//42
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//43
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//44
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//45
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//46
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//47
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//48
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//49
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//50
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//51
+                        { k: 1, e: 3, en: 3, r: 4, h: 1, s: 2, ex: 3, cost: 4 },//52
+                        { k: 1, e: 5, en: 3, r: 2, h: 1, s: 1, ex: 3, cost: 7 },//53
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//54
+                        { k: 1, e: 1, en: 5, r: 2, h: 1, s: 1, ex: 1, cost: 2 },//55
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//56
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 3, ex: 5, cost: 7 },//57
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 4, ex: 2, cost: 3 },//58
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//59
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//60
+                        { k: 1, e: 3, en: 4, r: 3, h: 1, s: 1, ex: 3, cost: 3 },//61
+                        { k: 1, e: 1, en: 5, r: 2, h: 1, s: 1, ex: 1, cost: 1 },//62
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//63
+                        { k: 2, e: 3, en: 3, r: 3, h: 1, s: 1, ex: 3, cost: 4 },//64
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//65
+                        { k: 2, e: 1, en: 3, r: 3, h: 5, s: 1, ex: 2, cost: 2 },//66
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//67
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 4, ex: 2, cost: 3 },//68
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//69
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//70
+                        { k: 0, e: 0, en: 0, r: 0, h: 0, s: 0, ex: 0, cost: 0 },//71
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//72
+                        { k: 1, e: 1, en: 5, r: 2, h: 1, s: 1, ex: 1, cost: 2 },//73
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 3, ex: 5, cost: 7 },//74
+                        { k: 1, e: 5, en: 3, r: 2, h: 1, s: 1, ex: 3, cost: 7 },//75
+                        { k: 3, e: 1, en: 3, r: 3, h: 2, s: 4, ex: 2, cost: 3 },//76
+                        { k: 1, e: 3, en: 3, r: 4, h: 1, s: 2, ex: 3, cost: 4 },//77
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//78
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//79
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//80
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//81
+                        { k: 2, e: 1, en: 2, r: 4, h: 1, s: 3, ex: 4, cost: 5 },//82
+                        { k: 2, e: 1, en: 3, r: 3, h: 5, s: 1, ex: 2, cost: 2 },//83
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//84
+                        { k: 1, e: 1, en: 5, r: 2, h: 1, s: 1, ex: 1, cost: 1 },//85
+                        { k: 5, e: 1, en: 2, r: 2, h: 1, s: 3, ex: 2, cost: 3 },//86
+                        { k: 1, e: 1, en: 5, r: 2, h: 1, s: 1, ex: 1, cost: 2 },//87
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//88
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//89
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//90
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//91
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//92
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//93
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//94
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//95
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//96
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//97
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 },//98
+                        { k: 1, e: 1, en: 1, r: 1, h: 1, s: 1, ex: 1, cost: 1 }//99
+                    ],
+                    k: 0, e: 0, en: 0, r: 0, h: 0, s: 0, ex: 0, cost: 100
+                },
+                methods: {
+                    go_up: function (event) {
+                        // alert("Up");
+                        this.go_grid(this.up_id, true);
+                    },
+                    go_left: function (event) {
+                        // alert("left");
+                        this.go_grid(this.left_id, true);
+                    },
+                    go_right: function (event) {
+                        // alert("right");
+                        this.go_grid(this.right_id, true);
+                    },
+                    go_down: function (event) {
+                        // alert("down");
+                        this.go_grid(this.down_id, true);
+                    },
+                    go_grid: function (next_gid, update_view) {
+                        // this.laby_map[this.now_id] = '';
+                        var gid = next_gid;
+                        // alert(gid);
+                        if (update_view) {
+                            labyrinth.$set(labyrinth.laby_map, this.now_id, '');
+                        }
+                        this.now_id = gid;
+                        if (this.laby_map[this.now_id] == 'E') {
+                            $('#successDialog').modal({backdrop: 'static', keyboard: false});
+                            $('#successDialog').modal('show');
+                            return;
+                            // alert("Success");
+                        }
+                        // this.laby_map[this.now_id] = 'O';
+                        if (update_view) {
+                            labyrinth.$set(labyrinth.laby_map, gid, 'O');
+                        }
+                        this.up_id = gid - 10;
+                        // console.log(this.up_id);
+                        this.left_id = gid - 1;
+                        this.right_id = gid + 1;
+                        this.down_id = gid + 10;
+                        this.up_on = this.laby_map[this.up_id] != 'X' ? true : false;
+                        this.left_on = this.laby_map[this.left_id] != 'X' ? true : false;
+                        this.right_on = this.laby_map[this.right_id] != 'X' ? true : false;
+                        this.down_on = this.laby_map[this.down_id] != 'X' ? true : false;
+                        this.up_desc = this.desc_text[this.up_id];
+                        this.left_desc = this.desc_text[this.left_id];
+                        this.right_desc = this.desc_text[this.right_id];
+                        this.down_desc = this.desc_text[this.down_id];
+                        this.now_desc = this.desc_text[this.now_id];
+                        this.up_img = this.img_src[this.up_id];
+                        this.left_img = this.img_src[this.left_id];
+                        this.right_img = this.img_src[this.right_id];
+                        this.down_img = this.img_src[this.down_id];
+                        this.now_img = this.img_src[this.now_id];
+                        if (update_view) {
+                            this.rand_score = Math.floor(Math.random() * (2) + 1) - 1;
+                        }
+                        this.k += this.action_prop[this.now_id].k + this.rand_score;
+                        this.e += this.action_prop[this.now_id].e + this.rand_score;
+                        this.en += this.action_prop[this.now_id].en + this.rand_score;
+                        this.r += this.action_prop[this.now_id].r + this.rand_score;
+                        this.h += this.action_prop[this.now_id].h + this.rand_score;
+                        this.s += this.action_prop[this.now_id].s + this.rand_score;
+                        this.ex += this.action_prop[this.now_id].ex + this.rand_score;
+                        this.cost -= this.action_prop[this.now_id].cost + this.rand_score;
+
+                        if (this.cost < 0) {
+                            $('#failDialog').modal({backdrop: 'static', keyboard: false});
+                            $('#failDialog').modal('show');
+                        } else if (update_view) {
+                            $('#operationDialog').modal('show');
+                        }
+
+                    }
+
+                },
+                mounted: function () {
+                    this.go_grid(71, false);
+                    // alert(this.now_id);
+                }
+            })
+      </script>
+
+  </body>
+</html>
